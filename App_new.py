@@ -48,6 +48,17 @@ def insert_employee(employee_id, department, hire_date, salary):
             cursor.close()
             conn.close()
 
+# Main function to control page flow
+def main():
+    # Check session state for login status
+    if 'logged_in' not in st.session_state:
+        st.session_state.logged_in = False
+
+    if st.session_state.logged_in:
+        employee_insertion_page()  # Show employee insertion page if logged in
+    else:
+        login_page()  # Show login page if not logged in
+
 # Login page
 def login_page():
     st.title("Login Page")
@@ -59,10 +70,9 @@ def login_page():
     # Check login credentials
     if st.button("Login"):
         if check_credentials(username, password):
+            st.session_state.logged_in = True  # Set login status
             st.success("Login successful!")
-            st.write("Redirecting to Employee Insertion page...")
-            time.sleep(1)  # Wait for a second before redirecting
-            employee_insertion_page()  # Call the employee insertion function
+            st.experimental_rerun()  # Rerun the app to refresh and show the new page
         else:
             st.error("Invalid credentials. Please try again.")
 
@@ -83,5 +93,6 @@ def employee_insertion_page():
         else:
             st.warning("Please fill all fields")
 
+# Run the main function to control page flow
 if __name__ == "__main__":
-    login_page()  # Show login page first
+    main()
